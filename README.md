@@ -10,6 +10,8 @@ your current tab — one keystroke, no detour through the HappyScribe web app.
 > say which service the extension works with. For HappyScribe support, contact
 > Happy Scribe; for problems with this extension, open an issue here.
 
+![The settings page, in light and dark](docs/settings.png)
+
 ## Why
 
 HappyScribe joins **scheduled** meetings on its own once you connect a calendar.

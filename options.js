@@ -85,6 +85,11 @@ async function save() {
   if (!apiKey) return status("Paste your key first.", "err");
   if (!organizationId) return status("Verify the key, then pick an organization.", "err");
 
+  const language = el("language").value.trim() || "auto";
+  if (!isLanguageCode(language)) {
+    return status(`"${language}" is not a language code. Use auto, or a locale like es-ES.`, "err");
+  }
+
   const chosen = knownOrganizations.find((o) => String(o.id) === organizationId);
 
   const saved = {
@@ -92,7 +97,7 @@ async function save() {
     organizationId: Number(organizationId),
     organizationName: chosen?.name ?? "",
     botName: el("botName").value.trim() || "Notetaker",
-    language: el("language").value.trim() || "auto",
+    language,
     recordingTrigger: el("recordingTrigger").value,
     summaryTemplate: el("summaryTemplate").value.trim()
   };
@@ -110,6 +115,16 @@ async function clear() {
   setOrganizations([], null);
   paintProgress({ apiKey: "", organizationId: null });
   status("Credentials cleared.", "ok");
+}
+
+/**
+ * HappyScribe documents full locale codes (es-ES, en-US, cmn-Hans-CN) plus `auto`
+ * — never a bare language like "es". Checked here because the API validates the
+ * meeting URL first and so never reports a bad language back at dispatch time;
+ * an invalid code would just fail silently or much later.
+ */
+function isLanguageCode(value) {
+  return value === "auto" || /^[a-z]{2,3}(-[A-Z][a-z]{3})?-[A-Z]{2}$/.test(value);
 }
 
 /**
