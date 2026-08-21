@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy policy — Notetaker Invite for HappyScribe</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        max-width: 40rem; margin: 0 auto; padding: 3rem 1.25rem 5rem;
+        color: #12141a; background: #ffffff;
+      }
+      @media (prefers-color-scheme: dark) {
+        body { color: #e8eaf0; background: #0f1218; }
+        a { color: #8b98ff; }
+      }
+      h1 { font-size: 1.6rem; letter-spacing: -.02em; margin-bottom: .25rem; }
+      .updated { color: #6b7280; margin-top: 0; font-size: .9rem; }
+      h2 { font-size: 1.05rem; margin-top: 2.25rem; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; }
+      .lede { font-size: 1.05rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Privacy policy</h1>
+    <p class="updated">Notetaker Invite for HappyScribe (unofficial) — last updated 21 August 2026</p>
+
+    <p class="lede">
+      This extension collects nothing. It has no server, no account system, no
+      analytics, and no telemetry. Nothing is ever sent to the developer.
+    </p>
+
+    <h2>What it stores, and where</h2>
+    <p>
+      Your HappyScribe API key, the organization you choose, and your defaults
+      for the notetaker (display name, transcription language, when recording
+      starts, summary template) are stored with
+      <code>chrome.storage.local</code> on the device you set them on. They are
+      deliberately not stored with <code>chrome.storage.sync</code>, so they are
+      never replicated to your Google account or to other browsers you sign into.
+      Removing the extension deletes them; the options page also has a
+      <em>Clear credentials</em> button.
+    </p>
+    <p>
+      These values are not encrypted. Anyone with access to your browser profile
+      can read them. Use full-disk encryption, and rotate your key if the profile
+      is ever exposed.
+    </p>
+
+    <h2>What it transmits, and to whom</h2>
+    <p>
+      One destination only: <code>www.happyscribe.com</code>, the service that
+      issued your key. Two requests are made:
+    </p>
+    <ul>
+      <li>
+        When you verify your key, the extension asks HappyScribe which
+        organizations that key can act for, so you can pick one by name.
+      </li>
+      <li>
+        When you invite the notetaker, the extension sends the join URL of the
+        meeting in your active tab, your chosen organization, and your defaults,
+        so HappyScribe can dispatch its bot to that meeting.
+      </li>
+    </ul>
+    <p>
+      Your key travels with those requests as an authorization header, because
+      that is how HappyScribe authenticates you. It goes nowhere else.
+    </p>
+
+    <h2>What it reads from your browser</h2>
+    <p>
+      The address of the tab you invoke it on, at the moment you invoke it, to
+      decide whether that tab is a Google Meet, Zoom, or Microsoft Teams meeting
+      and to extract the join link. It does not read page content, it does not
+      read other tabs, and it does not keep a history: meeting URLs are used for
+      the request and not persisted.
+    </p>
+
+    <h2>What happens to your meetings</h2>
+    <p>
+      Recording, transcription, and storage of the meeting itself are done by
+      HappyScribe, not by this extension, and are governed by
+      <a href="https://www.happyscribe.com/privacy-policy">Happy Scribe's own
+      privacy policy</a> and terms. This extension only asks their bot to join.
+      Recording a conversation carries obligations that vary by jurisdiction —
+      tell the people in the room.
+    </p>
+
+    <h2>Children</h2>
+    <p>This is a workplace tool. It is not directed at children.</p>
+
+    <h2>Changes</h2>
+    <p>
+      Any change to this policy will be published on this page with a new date,
+      and its history is public in the
+      <a href="https://github.com/nchgn/happyscribe-extension">source
+      repository</a>.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Open an issue at
+      <a href="https://github.com/nchgn/happyscribe-extension/issues">github.com/nchgn/happyscribe-extension/issues</a>.
+    </p>
+
+    <hr />
+    <p>
+      Unofficial. Not affiliated with, sponsored by, or endorsed by Happy Scribe.
+    </p>
+  </body>
+</html>
