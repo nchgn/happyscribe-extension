@@ -155,3 +155,9 @@ normalization mistakes.
 it grants no rights over Happy Scribe's trademarks, service, or API, and implies
 no relationship with that company. Your use of the API is subject to Happy
 Scribe's own terms.
+
+The icon files (`icon16.png`, `icon48.png`, `icon128.png`) are Happy Scribe's
+favicon and remain their property. They are included so the extension is
+recognizable as the thing it drives, not to suggest this project is theirs — it
+is not, see the notice at the top. The MIT license above does not extend to them,
+and Happy Scribe can ask for their removal at any time.
