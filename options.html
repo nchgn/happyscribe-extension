@@ -274,6 +274,35 @@
       }
       .payoff[data-ready="true"] kbd { background: var(--surface); }
 
+      /* ---- brain notice ------------------------------------------------ */
+      /* A black plate in both palettes: it is a brand surface borrowed whole,
+         not a panel of this page's own system. */
+      .brain {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        margin: .75rem 0 0 var(--gutter);
+        padding: .625rem .75rem;
+        background: #000;
+        border-radius: var(--radius);
+        color: #fff;
+        text-decoration: none;
+        font-size: 12.5px;
+      }
+      .brain:hover { background: #141414; }
+      .brain:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+      .brain svg { flex: none; }
+      .brain .copy { flex: 1; min-width: 0; }
+      .brain .copy b { font-weight: 600; }
+      .brain .copy span { color: #a1a1a1; }
+
+      .brain .go {
+        flex: none;
+        font: 400 11px/1 var(--mono);
+        color: #a1a1a1;
+      }
+
       footer {
         margin: 2rem 0 0;
         font: 400 11.5px/1.6 var(--mono);
@@ -370,6 +399,23 @@
         <span id="payoffText">Finish both steps to arm the shortcut.</span>
         <span id="payoffKeys"></span>
       </p>
+
+      <div id="brainNotice" hidden>
+        <a class="brain" href="https://gurusup.com/brain" target="_blank" rel="noopener noreferrer">
+          <svg width="16" height="16" viewBox="0 0 254 254" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M142.601 0L127.157 38.853L111.876 0H87.0041L114.965 70.5525H139.349L166.985 0H142.601Z" fill="currentColor"/>
+            <path d="M253.989 142.601L215.136 127.157L253.989 111.876V87.0041L183.436 114.965V139.349L253.989 166.985V142.601Z" fill="currentColor"/>
+            <path d="M111.388 253.989L126.832 215.136L142.113 253.989H166.985L139.024 183.436H114.64L87.0041 253.989L111.388 253.989Z" fill="currentColor"/>
+            <path d="M6.62982e-07 111.388L38.853 126.832L2.96594e-07 142.113L0 166.985L70.5525 139.024V114.64L9.5376e-07 87.0041L6.62982e-07 111.388Z" fill="currentColor"/>
+            <path d="M78.3896 94.9368L97.7343 75.5921L43.9259 21.7837L24.5812 41.1284L78.3896 94.9368Z" fill="currentColor"/>
+            <path d="M157.232 75.592L176.577 94.9368L230.385 41.1284L211.04 21.7837L157.232 75.592Z" fill="currentColor"/>
+            <path d="M176.577 157.036L157.232 176.381L211.04 230.189L230.385 210.844L176.577 157.036Z" fill="currentColor"/>
+            <path d="M97.7344 176.381L78.3896 157.036L24.5812 210.845L43.926 230.189L97.7344 176.381Z" fill="currentColor"/>
+          </svg>
+          <span class="copy"><b>GuruSup Brain</b> <span>· ask your company anything</span></span>
+          <span class="go">↗</span>
+        </a>
+      </div>
 
       <footer>
         Stored unencrypted in this browser profile. Rotate the key if the profile

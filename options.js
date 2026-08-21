@@ -128,6 +128,9 @@ function paintProgress({ apiKey, organizationId }) {
 
   const ready = hasKey && hasOrg;
   el("payoff").dataset.ready = String(ready);
+  // Surfaces only once the extension is actually set up, so it never competes
+  // with the job the page is here to do.
+  el("brainNotice").hidden = !ready;
   el("payoffText").textContent = ready
     ? "Armed. In a Meet, Zoom or Teams tab, press"
     : "Finish both steps to arm the shortcut.";
