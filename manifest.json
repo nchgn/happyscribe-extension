@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "HappyScribe Notetaker Invite (unofficial)",
+  "description": "Unofficial, not affiliated with Happy Scribe: send the HappyScribe notetaker into the meeting in your current tab, using your own API key.",
+  "version": "0.1.0",
+  "permissions": [
+    "storage",
+    "tabs",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://www.happyscribe.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Invite the notetaker (Ctrl/Cmd+Shift+H)",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "options_page": "options.html",
+  "commands": {
+    "invite-notetaker": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+H",
+        "mac": "Command+Shift+H"
+      },
+      "description": "Invite the notetaker to the meeting in the active tab"
+    }
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
