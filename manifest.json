@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "HappyScribe Notetaker Invite (unofficial)",
   "description": "Unofficial, not affiliated with Happy Scribe: send the HappyScribe notetaker into the meeting in your current tab, using your own API key.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "permissions": [
     "storage",
     "tabs",
