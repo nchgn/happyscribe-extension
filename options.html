@@ -2,75 +2,380 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>HappyScribe Notetaker — settings</title>
+    <title>Notetaker setup</title>
     <style>
-      :root { color-scheme: light dark; }
-      body {
-        font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        max-width: 34rem; margin: 2rem auto; padding: 0 1.25rem;
+      /* ---- tokens ------------------------------------------------------ */
+      :root {
+        --paper: #f6f7f9;
+        --surface: #ffffff;
+        --ink: #12141a;
+        --ink-2: #5b6272;
+        --ink-3: #8a91a1;
+        --line: #e3e6ec;
+        --line-strong: #c9cedb;
+        --accent: #2536c7;
+        --accent-soft: #eef0fd;
+        --on-accent: #ffffff;
+        --ok: #15803d;
+        --warn: #b45309;
+        --err: #b91c1c;
+
+        --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+        --radius: 7px;
+        --gutter: 1.75rem;
       }
-      h1 { font-size: 1.15rem; margin-bottom: .25rem; }
-      p.lead { margin-top: 0; opacity: .7; }
-      label { display: block; margin-top: 1.1rem; font-weight: 600; }
-      input, select { width: 100%; padding: .5rem; margin-top: .3rem; box-sizing: border-box; }
-      .row { display: flex; gap: .5rem; align-items: flex-end; }
-      .row > :first-child { flex: 1; }
-      button { padding: .5rem 1rem; cursor: pointer; }
-      .primary { margin-top: 1.5rem; font-weight: 600; }
-      .hint { font-size: 12px; opacity: .65; margin-top: .3rem; }
-      #status { margin-top: 1rem; min-height: 1.4em; font-size: 13px; }
-      .ok { color: #15803d; }
-      .err { color: #b91c1c; }
-      fieldset { border: 1px solid rgba(128,128,128,.35); margin-top: 1.75rem; padding: .25rem 1rem 1rem; }
-      legend { font-weight: 600; padding: 0 .4rem; }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: #0f1218;
+          --surface: #171b23;
+          --ink: #e8eaf0;
+          --ink-2: #9aa1b3;
+          --ink-3: #737b8d;
+          --line: #262c38;
+          --line-strong: #39414f;
+          --accent: #8b98ff;
+          --accent-soft: #1b2138;
+          --on-accent: #0f1218;
+          --ok: #4ec27d;
+          --warn: #e0a13a;
+          --err: #f2796f;
+        }
+      }
+
+      /* ---- base -------------------------------------------------------- */
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        padding: 3rem 1.5rem 4rem;
+        background: var(--paper);
+        color: var(--ink);
+        font: 400 14px/1.55 var(--sans);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      main { max-width: 30rem; margin: 0 auto; }
+
+      /* One text column. The spine hangs in the left margin rather than pushing
+         the steps off the axis the header sits on. */
+      .eyebrow, h1, .standfirst, footer { padding-left: var(--gutter); }
+
+      .eyebrow {
+        margin: 0 0 .75rem;
+        font: 500 10.5px/1 var(--mono);
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+      }
+
+      h1 {
+        margin: 0 0 .4rem;
+        font-size: 1.5rem;
+        font-weight: 640;
+        letter-spacing: -.02em;
+      }
+
+      .standfirst { margin: 0 0 2.5rem; color: var(--ink-2); }
+
+      /* ---- the spine --------------------------------------------------- */
+      /* Steps are a real dependency chain: no organization before the key is
+         verified. The spine draws that chain and fills in as it is satisfied. */
+      .steps { position: relative; margin: 0; padding: 0; list-style: none; }
+
+      .step { position: relative; padding: 0 0 2.25rem var(--gutter); }
+      .step:last-child { padding-bottom: 1.5rem; }
+
+      /* connector */
+      .step::before {
+        content: "";
+        position: absolute;
+        left: 4px; top: 1.15rem; bottom: -.35rem;
+        width: 1px;
+        background: var(--line-strong);
+      }
+      .step:last-child::before { display: none; }
+      .step[data-state="done"]::before { background: var(--accent); }
+
+      /* node */
+      .step::after {
+        content: "";
+        position: absolute;
+        left: 0; top: .45rem;
+        width: 9px; height: 9px;
+        border: 1.5px solid var(--line-strong);
+        border-radius: 50%;
+        background: var(--paper);
+      }
+      .step[data-state="done"]::after {
+        border-color: var(--accent);
+        background: var(--accent);
+      }
+      .step[data-state="optional"]::after { border-style: dashed; }
+
+      .step-head {
+        display: flex;
+        align-items: baseline;
+        gap: .5rem;
+        margin-bottom: .7rem;
+      }
+
+      /* Step titles carry the outline of the page, so they sit at full ink.
+         Field labels inside a step step back a level — see .grid .label. */
+      .step-head .label {
+        font-size: 11px;
+        letter-spacing: .11em;
+        color: var(--ink);
+      }
+
+      .label {
+        font: 500 10.5px/1.4 var(--mono);
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        color: var(--ink-2);
+      }
+
+      .flag {
+        font: 400 10.5px/1.4 var(--mono);
+        letter-spacing: .06em;
+        color: var(--ink-3);
+      }
+
+      .hint {
+        margin: .5rem 0 0;
+        font-size: 12px;
+        color: var(--ink-3);
+      }
+
+      /* ---- controls ---------------------------------------------------- */
+      input, select {
+        width: 100%;
+        padding: .5rem .625rem;
+        font: 400 13.5px/1.4 var(--sans);
+        color: var(--ink);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        transition: border-color .12s ease, box-shadow .12s ease;
+      }
+
+      input#apiKey { font-family: var(--mono); letter-spacing: .02em; }
+
+      input:hover, select:hover { border-color: var(--line-strong); }
+
+      input:focus-visible, select:focus-visible, button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+        border-color: transparent;
+      }
+
+      select:disabled { color: var(--ink-3); background: var(--paper); }
+
+      .field-row { display: flex; gap: .5rem; }
+      .field-row > input { flex: 1; min-width: 0; }
+
+      .grid {
+        display: grid;
+        gap: 1rem .75rem;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 26rem) {
+        .grid { grid-template-columns: 1fr 1fr; }
+      }
+
+      .grid { margin-top: .2rem; }
+
+      .grid .label {
+        display: block;
+        margin-bottom: .3rem;
+        font-size: 9.5px;
+        letter-spacing: .07em;
+        font-weight: 400;
+        color: var(--ink-3);
+      }
+
+      button {
+        font: 500 13px/1 var(--sans);
+        color: var(--ink);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: .5rem .75rem;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: border-color .12s ease, background .12s ease, color .12s ease;
+      }
+      button:hover { border-color: var(--line-strong); }
+
+      .primary {
+        color: var(--on-accent);
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .primary:hover { filter: brightness(1.08); }
+
+      .quiet {
+        border-color: transparent;
+        background: none;
+        color: var(--ink-3);
+        padding-inline: .25rem;
+      }
+      .quiet:hover { color: var(--err); border-color: transparent; }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        padding-left: var(--gutter);
+        margin-top: .25rem;
+      }
+      .actions .spacer { flex: 1; }
+
+      #status {
+        min-height: 1.4em;
+        margin: .9rem 0 0;
+        padding-left: var(--gutter);
+        font-size: 12.5px;
+        color: var(--ink-2);
+      }
+      #status.ok { color: var(--ok); }
+      #status.err { color: var(--err); }
+
+      /* ---- shortcut payoff --------------------------------------------- */
+      .payoff {
+        margin: 2.5rem 0 0 var(--gutter);
+        padding: 1rem 1.125rem;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        color: var(--ink-2);
+        font-size: 13px;
+      }
+      .payoff[data-ready="true"] {
+        background: var(--accent-soft);
+        border-color: transparent;
+        color: var(--ink);
+      }
+
+      kbd {
+        display: inline-block;
+        min-width: 1.55em;
+        padding: .15em .4em;
+        margin: 0 .1em;
+        font: 500 12px/1.35 var(--mono);
+        text-align: center;
+        color: var(--ink);
+        background: var(--paper);
+        border: 1px solid var(--line-strong);
+        border-bottom-width: 2px;
+        border-radius: 5px;
+      }
+      .payoff[data-ready="true"] kbd { background: var(--surface); }
+
+      footer {
+        margin: 2rem 0 0;
+        font: 400 11.5px/1.6 var(--mono);
+        color: var(--ink-3);
+      }
+      footer a { color: inherit; }
+
+      @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; }
+      }
     </style>
   </head>
+
   <body>
-    <h1>HappyScribe Notetaker — settings</h1>
-    <p class="lead">
-      Your key is stored on this device only (<code>chrome.storage.local</code>,
-      never <code>storage.sync</code>) and is sent to nowhere but
-      <code>happyscribe.com</code>. It is not encrypted: anyone with access to
-      this browser profile can read it.
-    </p>
+    <main>
+      <p class="eyebrow">HappyScribe · unofficial</p>
+      <h1>Notetaker setup</h1>
+      <p class="standfirst">
+        Two steps, once. Your key stays on this device and goes nowhere but
+        happyscribe.com.
+      </p>
 
-    <label for="apiKey">API key</label>
-    <div class="row">
-      <input id="apiKey" type="password" autocomplete="off" placeholder="Paste your HappyScribe API key" />
-      <button id="reveal" type="button">Show</button>
-      <button id="verify" type="button">Verify</button>
-    </div>
-    <p class="hint">HappyScribe → Account → API key.</p>
+      <ol class="steps">
+        <li class="step" id="step-key" data-state="todo">
+          <div class="step-head">
+            <span class="label">API key</span>
+          </div>
+          <div class="field-row">
+            <input
+              id="apiKey"
+              type="password"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Paste your key"
+            />
+            <button id="reveal" type="button">Show</button>
+            <button id="verify" type="button">Verify</button>
+          </div>
+          <p class="hint">Find it in HappyScribe under Account → API key.</p>
+        </li>
 
-    <label for="organizationId">Organization</label>
-    <select id="organizationId">
-      <option value="">— verify your key to load organizations —</option>
-    </select>
+        <li class="step" id="step-org" data-state="todo">
+          <div class="step-head">
+            <span class="label">Organization</span>
+          </div>
+          <select id="organizationId" disabled>
+            <option value="">Verify your key to load organizations</option>
+          </select>
+          <p class="hint">
+            Meetings are billed to the organization you pick here.
+          </p>
+        </li>
 
-    <fieldset>
-      <legend>Defaults for every invitation</legend>
+        <li class="step" id="step-defaults" data-state="optional">
+          <div class="step-head">
+            <span class="label">Every invitation</span>
+            <span class="flag">optional</span>
+          </div>
+          <div class="grid">
+            <div>
+              <label class="label" for="botName">Name in the call</label>
+              <input id="botName" type="text" maxlength="64" placeholder="Notetaker" />
+            </div>
+            <div>
+              <label class="label" for="language">Language</label>
+              <input id="language" type="text" placeholder="auto" />
+            </div>
+            <div>
+              <label class="label" for="recordingTrigger">Start recording</label>
+              <select id="recordingTrigger">
+                <option value="call_join">On joining the call</option>
+                <option value="participant_join">When someone joins</option>
+                <option value="participant_speak">When someone speaks</option>
+                <option value="manual">Manually</option>
+              </select>
+            </div>
+            <div>
+              <label class="label" for="summaryTemplate">Summary template</label>
+              <input id="summaryTemplate" type="text" placeholder="none" />
+            </div>
+          </div>
+        </li>
+      </ol>
 
-      <label for="botName">Name shown in the call</label>
-      <input id="botName" type="text" maxlength="64" placeholder="Notetaker" />
+      <div class="actions">
+        <button id="save" class="primary" type="button">Save</button>
+        <span class="spacer"></span>
+        <button id="clear" class="quiet" type="button">Clear credentials</button>
+      </div>
 
-      <label for="language">Transcription language</label>
-      <input id="language" type="text" placeholder="auto, en, en-US, es-ES…" />
+      <p id="status" role="status" aria-live="polite"></p>
 
-      <label for="recordingTrigger">Start recording</label>
-      <select id="recordingTrigger">
-        <option value="call_join">When the bot joins the call</option>
-        <option value="participant_join">When a participant joins</option>
-        <option value="participant_speak">When someone speaks</option>
-        <option value="manual">Manually</option>
-      </select>
+      <p class="payoff" id="payoff" data-ready="false">
+        <span id="payoffText">Finish both steps to arm the shortcut.</span>
+        <span id="payoffKeys"></span>
+      </p>
 
-      <label for="summaryTemplate">Summary template (optional)</label>
-      <input id="summaryTemplate" type="text" placeholder="sales_call" />
-    </fieldset>
-
-    <button id="save" class="primary" type="button">Save</button>
-    <button id="clear" type="button">Clear credentials</button>
-    <p id="status"></p>
+      <footer>
+        Stored unencrypted in this browser profile. Rotate the key if the profile
+        is ever exposed.
+      </footer>
+    </main>
 
     <script type="module" src="options.js"></script>
   </body>
